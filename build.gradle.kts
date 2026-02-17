@@ -4,6 +4,7 @@ val webdrivermanagerVersion = "5.6.3"
 
 plugins {
     java
+    jacoco
     id("org.springframework.boot") version "3.5.10"
     id("io.spring.dependency-management") version "1.1.7"
 }
@@ -11,6 +12,17 @@ plugins {
 group = "id.ac.ui.cs.advprog"
 version = "0.0.1-SNAPSHOT"
 description = "eshop"
+
+tasks.test {
+    filter {
+        excludeTestsMatching("*FunctionalTest")
+    }
+    finalizedBy(tasks.jacocoTestReport) // 5c
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+}
 
 java {
     toolchain {
