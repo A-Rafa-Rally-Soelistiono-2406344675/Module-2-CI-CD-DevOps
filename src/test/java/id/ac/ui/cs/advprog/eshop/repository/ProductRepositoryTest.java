@@ -94,6 +94,12 @@ class ProductRepositoryTest {
 
     @Test
     void testUpdateNonExistingProduct() {
+        Product existingProduct = new Product();
+        existingProduct.setProductId("existing-id");
+        existingProduct.setProductName("Sampo Cap Bambang");
+        existingProduct.setProductQuantity(100);
+        productRepository.create(existingProduct);
+
         Product updatedProduct = new Product();
         updatedProduct.setProductId("not-found");
         updatedProduct.setProductName("Sampo Cap Super");
@@ -118,6 +124,12 @@ class ProductRepositoryTest {
 
     @Test
     void testDeleteNonExistingProduct() {
+        Product existingProduct = new Product();
+        existingProduct.setProductId("existing-id");
+        existingProduct.setProductName("Sampo Cap Bambang");
+        existingProduct.setProductQuantity(100);
+        productRepository.create(existingProduct);
+
         boolean deleted = productRepository.deleteById("not-found");
         assertFalse(deleted);
     }
@@ -136,6 +148,43 @@ class ProductRepositoryTest {
         updatedProduct.setProductQuantity(250);
 
         Product result = productRepository.update(updatedProduct);
+        assertNull(result);
+    }
+
+    @Test
+    void testFindByIdWhenProductExists() {
+        Product product = new Product();
+        product.setProductId("product-1");
+        product.setProductName("Sampo Cap Bambang");
+        product.setProductQuantity(100);
+        productRepository.create(product);
+
+        Product result = productRepository.findById("product-1");
+        assertNotNull(result);
+        assertEquals("product-1", result.getProductId());
+    }
+
+    @Test
+    void testFindByIdReturnsNullWhenStoredProductIdIsNull() {
+        Product product = new Product();
+        product.setProductId(null);
+        product.setProductName("Sampo Cap Bambang");
+        product.setProductQuantity(100);
+        productRepository.create(product);
+
+        Product result = productRepository.findById("product-1");
+        assertNull(result);
+    }
+
+    @Test
+    void testFindByIdReturnsNullWhenProductNotFound() {
+        Product product = new Product();
+        product.setProductId("product-1");
+        product.setProductName("Sampo Cap Bambang");
+        product.setProductQuantity(100);
+        productRepository.create(product);
+
+        Product result = productRepository.findById("missing-id");
         assertNull(result);
     }
 
