@@ -18,6 +18,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceImplTest {
+    private static final String PRODUCT_ID = "product-1";
 
     @InjectMocks
     private ProductServiceImpl productService;
@@ -81,11 +82,11 @@ class ProductServiceImplTest {
     @Test
     void findByIdShouldDelegateToRepository() {
         Product product = new Product();
-        when(productRepository.findById("product-1")).thenReturn(product);
+        when(productRepository.findById(PRODUCT_ID)).thenReturn(product);
 
-        Product result = productService.findById("product-1");
+        Product result = productService.findById(PRODUCT_ID);
 
-        verify(productRepository).findById("product-1");
+        verify(productRepository).findById(PRODUCT_ID);
         assertSame(product, result);
     }
 
@@ -102,11 +103,11 @@ class ProductServiceImplTest {
 
     @Test
     void deleteByIdShouldDelegateToRepository() {
-        when(productRepository.deleteById("product-1")).thenReturn(true);
+        when(productRepository.deleteById(PRODUCT_ID)).thenReturn(true);
 
-        boolean result = productService.deleteById("product-1");
+        boolean result = productService.deleteById(PRODUCT_ID);
 
-        verify(productRepository).deleteById("product-1");
+        verify(productRepository).deleteById(PRODUCT_ID);
         assertTrue(result);
     }
 }
