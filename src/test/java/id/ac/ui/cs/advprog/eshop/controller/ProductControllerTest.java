@@ -18,6 +18,9 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ProductControllerTest {
+    private static final String PRODUCT_KEY = "product";
+    private static final String PRODUCT_ID = "product-1";
+    private static final String MISSING_ID = "missing-id";
 
     @InjectMocks
     private ProductController productController;
@@ -33,7 +36,7 @@ class ProductControllerTest {
         String viewName = productController.createProductPage(model);
 
         ArgumentCaptor<Product> productCaptor = ArgumentCaptor.forClass(Product.class);
-        verify(model).addAttribute(eq("product"), productCaptor.capture());
+        verify(model).addAttribute(eq(PRODUCT_KEY), productCaptor.capture());
         assertNotNull(productCaptor.getValue());
         assertEquals("createProduct", viewName);
     }
@@ -61,24 +64,24 @@ class ProductControllerTest {
 
     @Test
     void editProductPageShouldRedirectWhenProductNotFound() {
-        when(productService.findById("missing-id")).thenReturn(null);
+        when(productService.findById(MISSING_ID)).thenReturn(null);
 
-        String viewName = productController.editProductPage("missing-id", model);
+        String viewName = productController.editProductPage(MISSING_ID, model);
 
-        verify(productService).findById("missing-id");
-        verify(model, never()).addAttribute(eq("product"), any());
+        verify(productService).findById(MISSING_ID);
+        verify(model, never()).addAttribute(eq(PRODUCT_KEY), any());
         assertEquals("redirect:/product/list", viewName);
     }
 
     @Test
     void editProductPageShouldSetProductWhenFound() {
         Product product = new Product();
-        product.setProductId("product-1");
-        when(productService.findById("product-1")).thenReturn(product);
+        product.setProductId(PRODUCT_ID);
+        when(productService.findById(PRODUCT_ID)).thenReturn(product);
 
-        String viewName = productController.editProductPage("product-1", model);
+        String viewName = productController.editProductPage(PRODUCT_ID, model);
 
-        verify(model).addAttribute("product", product);
+        verify(model).addAttribute(PRODUCT_KEY, product);
         assertEquals("editProduct", viewName);
     }
 
@@ -94,9 +97,9 @@ class ProductControllerTest {
 
     @Test
     void deleteProductShouldDeleteByIdAndRedirectToList() {
-        String viewName = productController.deleteProduct("product-1");
+        String viewName = productController.deleteProduct(PRODUCT_ID);
 
-        verify(productService).deleteById("product-1");
+        verify(productService).deleteById(PRODUCT_ID);
         assertEquals("redirect:/product/list", viewName);
     }
 }
