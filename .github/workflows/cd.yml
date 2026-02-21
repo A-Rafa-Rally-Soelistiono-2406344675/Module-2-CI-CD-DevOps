@@ -37,19 +37,20 @@ jobs:
           usedocker: false
           dontautocreate: true
 
-      - name: Verify app is up (smoke test)
+      - name: Verify app content
         env:
           APP_URL: https://${{ secrets.HEROKU_APP_NAME }}.herokuapp.com
         run: |
           for i in {1..12}; do
-            status=$(curl -L -s -o /dev/null -w "%{http_code}" "$APP_URL/product/list")
-            if [[ "$status" =~ ^2|^3 ]]; then
-              echo "App is reachable. status=$status"
+            body=$(curl -L -s "$APP_URL/product/list")
+            if echo "$body" | grep -q "Create Product"; then
+              echo "App loaded and expected content found."
               exit 0
             fi
-            echo "Attempt $i: status=$status, waiting..."
+            echo "Attempt $i: content not found, waiting..."
             sleep 10
           done
-          echo "Smoke test failed."
+          echo "Verification failed."
           exit 1
+
 
