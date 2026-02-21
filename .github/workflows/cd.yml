@@ -1,0 +1,54 @@
+name: Continuous Deployment (CD)
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Test and Deploy to Heroku
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: gradle
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Run tests
+        run: ./gradlew test
+
+      - name: Deploy to Heroku
+        uses: akhileshns/heroku-deploy@v3.14.15
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+          heroku_email: ${{ secrets.HEROKU_EMAIL }}
+          usedocker: false
+          dontautocreate: true
+
+      - name: Verify app is up
+        env:
+          APP_URL: https://${{ secrets.HEROKU_APP_NAME }}.herokuapp.com
+        run: |
+          for i in {1..12}; do
+            status=$(curl -s -o /dev/null -w "%{http_code}" "$APP_URL/")
+            if [ "$status" = "200" ]; then
+              echo "App is healthy at $APP_URL/"
+              exit 0
+            fi
+            echo "Attempt $i: status=$status, waiting..."
+            sleep 10
+          done
+          echo "App health check failed."
+          exit 1
