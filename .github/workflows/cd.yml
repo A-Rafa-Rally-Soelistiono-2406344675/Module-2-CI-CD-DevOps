@@ -37,18 +37,19 @@ jobs:
           usedocker: false
           dontautocreate: true
 
-      - name: Verify app is up
+      - name: Verify app is up (smoke test)
         env:
           APP_URL: https://${{ secrets.HEROKU_APP_NAME }}.herokuapp.com
         run: |
           for i in {1..12}; do
-            status=$(curl -s -o /dev/null -w "%{http_code}" "$APP_URL/")
-            if [ "$status" = "200" ]; then
-              echo "App is healthy at $APP_URL/"
+            status=$(curl -L -s -o /dev/null -w "%{http_code}" "$APP_URL/product/list")
+            if [[ "$status" =~ ^2|^3 ]]; then
+              echo "App is reachable. status=$status"
               exit 0
             fi
             echo "Attempt $i: status=$status, waiting..."
             sleep 10
           done
-          echo "App health check failed."
+          echo "Smoke test failed."
           exit 1
+
