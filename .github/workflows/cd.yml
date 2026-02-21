@@ -37,9 +37,9 @@ jobs:
           usedocker: false
           dontautocreate: true
 
-      - name: Verify home page
+      - name: Verify up page
         env:
-          APP_URL: https://${{ secrets.HEROKU_APP_NAME }}.herokuapp.com
+          APP_URL: https://a-rafa-rally-soelistiono-modul-81845caf2692.herokuapp.com
         run: |
           for i in {1..18}; do
             response=$(curl -sSL --max-time 20 -w $'\n__STATUS__:%{http_code}' "$APP_URL/" || true)
@@ -58,4 +58,3 @@ jobs:
           done
           echo "Home page verification failed."
           exit 1
-
