@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT -jar build/libs/*.jar
+web: java $JAVA_OPTS -Dserver.port=$PORT -jar $(ls build/libs/*.jar | grep -v -- '-plain.jar' | head -n 1)

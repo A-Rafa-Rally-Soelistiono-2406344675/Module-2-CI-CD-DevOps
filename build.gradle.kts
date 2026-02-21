@@ -89,3 +89,7 @@ tasks.register<Test>("functionalTest") {
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
 }
+
+tasks.named("jar") {
+    enabled = false
+}
