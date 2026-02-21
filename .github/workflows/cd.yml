@@ -10,6 +10,9 @@ jobs:
   deploy:
     name: Test and Deploy to Heroku
     runs-on: ubuntu-22.04
+    environment:
+      name: Production
+      url: https://a-rafa-rally-soelistiono-modul-81845caf2692.herokuapp.com
 
     steps:
       - name: Check out repository
@@ -58,3 +61,8 @@ jobs:
           done
           echo "Home page verification failed."
           exit 1
+
+      - name: Publish deploy link
+        run: |
+          echo "### Deployment URL" >> $GITHUB_STEP_SUMMARY
+          echo "https://a-rafa-rally-soelistiono-modul-81845caf2692.herokuapp.com" >> $GITHUB_STEP_SUMMARY
