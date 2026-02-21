@@ -37,20 +37,25 @@ jobs:
           usedocker: false
           dontautocreate: true
 
-      - name: Verify app content
+      - name: Verify home page
         env:
           APP_URL: https://${{ secrets.HEROKU_APP_NAME }}.herokuapp.com
         run: |
-          for i in {1..12}; do
-            body=$(curl -L -s "$APP_URL/product/list")
-            if echo "$body" | grep -q "Create Product"; then
-              echo "App loaded and expected content found."
+          for i in {1..18}; do
+            response=$(curl -sSL --max-time 20 -w $'\n__STATUS__:%{http_code}' "$APP_URL/" || true)
+            body=$(echo "$response" | sed '$d')
+            status=$(echo "$response" | tail -n1 | sed 's/__STATUS__://')
+
+            if [ "$status" = "200" ] \
+              && echo "$body" | grep -qi "Welcome" \
+              && echo "$body" | grep -qi "View Products"; then
+              echo "Home page passed."
               exit 0
             fi
-            echo "Attempt $i: content not found, waiting..."
+
+            echo "Attempt $i failed: status=$status. Waiting..."
             sleep 10
           done
-          echo "Verification failed."
+          echo "Home page verification failed."
           exit 1
-
 
