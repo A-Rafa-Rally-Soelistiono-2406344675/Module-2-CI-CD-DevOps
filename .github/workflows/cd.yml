@@ -1,7 +1,11 @@
 name: Continuous Deployment (CD)
 
 on:
-  push:
+  workflow_run:
+    workflows:
+      - Continuous Integration (CI)
+    types:
+      - completed
     branches:
       - main
   workflow_dispatch:
@@ -10,6 +14,7 @@ jobs:
   deploy:
     name: Test and Deploy to Heroku
     runs-on: ubuntu-22.04
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     environment:
       name: Production
       url: https://a-rafa-rally-soelistiono-modul-81845caf2692.herokuapp.com
