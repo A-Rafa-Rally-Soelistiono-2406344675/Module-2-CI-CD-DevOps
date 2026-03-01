@@ -1,7 +1,8 @@
 package id.ac.ui.cs.advprog.eshop.service;
 
 import id.ac.ui.cs.advprog.eshop.model.Product;
-import id.ac.ui.cs.advprog.eshop.repository.ProductRepository;
+import id.ac.ui.cs.advprog.eshop.repository.ProductReadRepository;
+import id.ac.ui.cs.advprog.eshop.repository.ProductWriteRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -24,7 +25,10 @@ class ProductServiceImplTest {
     private ProductServiceImpl productService;
 
     @Mock
-    private ProductRepository productRepository;
+    private ProductReadRepository productReadRepository;
+
+    @Mock
+    private ProductWriteRepository productWriteRepository;
 
     @Test
     void createShouldGenerateProductIdWhenProductIdIsNull() {
@@ -34,7 +38,7 @@ class ProductServiceImplTest {
         Product result = productService.create(product);
 
         ArgumentCaptor<Product> productCaptor = ArgumentCaptor.forClass(Product.class);
-        verify(productRepository).create(productCaptor.capture());
+        verify(productWriteRepository).create(productCaptor.capture());
         assertNotNull(productCaptor.getValue().getProductId());
         assertFalse(productCaptor.getValue().getProductId().isBlank());
         assertSame(product, result);
@@ -47,7 +51,7 @@ class ProductServiceImplTest {
 
         Product result = productService.create(product);
 
-        verify(productRepository).create(product);
+        verify(productWriteRepository).create(product);
         assertNotNull(product.getProductId());
         assertFalse(product.getProductId().isBlank());
         assertSame(product, result);
@@ -60,7 +64,7 @@ class ProductServiceImplTest {
 
         Product result = productService.create(product);
 
-        verify(productRepository).create(product);
+        verify(productWriteRepository).create(product);
         assertEquals("existing-id", product.getProductId());
         assertSame(product, result);
     }
@@ -70,7 +74,7 @@ class ProductServiceImplTest {
         Product product1 = new Product();
         Product product2 = new Product();
         Iterator<Product> iterator = List.of(product1, product2).iterator();
-        when(productRepository.findAll()).thenReturn(iterator);
+        when(productReadRepository.findAll()).thenReturn(iterator);
 
         List<Product> result = productService.findAll();
 
@@ -82,32 +86,32 @@ class ProductServiceImplTest {
     @Test
     void findByIdShouldDelegateToRepository() {
         Product product = new Product();
-        when(productRepository.findById(PRODUCT_ID)).thenReturn(product);
+        when(productReadRepository.findById(PRODUCT_ID)).thenReturn(product);
 
         Product result = productService.findById(PRODUCT_ID);
 
-        verify(productRepository).findById(PRODUCT_ID);
+        verify(productReadRepository).findById(PRODUCT_ID);
         assertSame(product, result);
     }
 
     @Test
     void updateShouldDelegateToRepository() {
         Product product = new Product();
-        when(productRepository.update(product)).thenReturn(product);
+        when(productWriteRepository.update(product)).thenReturn(product);
 
         Product result = productService.update(product);
 
-        verify(productRepository).update(product);
+        verify(productWriteRepository).update(product);
         assertSame(product, result);
     }
 
     @Test
     void deleteByIdShouldDelegateToRepository() {
-        when(productRepository.deleteById(PRODUCT_ID)).thenReturn(true);
+        when(productWriteRepository.deleteById(PRODUCT_ID)).thenReturn(true);
 
         boolean result = productService.deleteById(PRODUCT_ID);
 
-        verify(productRepository).deleteById(PRODUCT_ID);
+        verify(productWriteRepository).deleteById(PRODUCT_ID);
         assertTrue(result);
     }
 }

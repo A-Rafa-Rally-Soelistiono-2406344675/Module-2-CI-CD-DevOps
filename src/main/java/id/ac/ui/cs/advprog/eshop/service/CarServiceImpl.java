@@ -1,8 +1,8 @@
 package id.ac.ui.cs.advprog.eshop.service;
 
 import id.ac.ui.cs.advprog.eshop.model.Car;
-import id.ac.ui.cs.advprog.eshop.repository.CarRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import id.ac.ui.cs.advprog.eshop.repository.CarReadRepository;
+import id.ac.ui.cs.advprog.eshop.repository.CarWriteRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -11,20 +11,26 @@ import java.util.List;
 
 @Service
 public class CarServiceImpl implements CarService {
+    //implemented dip: service bergantung pada abstraksi repository, bukan class konkret.
+    //implemented isp: service menggunakan kontrak read/write yang spesifik.
+    private final CarReadRepository carReadRepository;
+    private final CarWriteRepository carWriteRepository;
 
-    @Autowired
-    private CarRepository carRepository;
+    public CarServiceImpl(CarReadRepository carReadRepository,
+                          CarWriteRepository carWriteRepository) {
+        this.carReadRepository = carReadRepository;
+        this.carWriteRepository = carWriteRepository;
+    }
 
     @Override
     public Car create(Car car) {
-        // TODO Auto-generated method stub
-        carRepository.create(car);
+        carWriteRepository.create(car);
         return car;
     }
 
     @Override
     public List<Car> findAll() {
-        Iterator<Car> carIterator = carRepository.findAll();
+        Iterator<Car> carIterator = carReadRepository.findAll();
         List<Car> allCar = new ArrayList<>();
 
         carIterator.forEachRemaining(allCar::add);
@@ -33,19 +39,16 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public Car findById(String carId) {
-        Car car = carRepository.findById(carId);
-        return car;
+        return carReadRepository.findById(carId);
     }
 
     @Override
     public void update(String carId, Car car) {
-        // TODO Auto-generated method stub
-        carRepository.update(carId, car);
+        carWriteRepository.update(carId, car);
     }
 
     @Override
     public void deleteCarById(String carId) {
-        // TODO Auto-generated method stub
-        carRepository.delete(carId);
+        carWriteRepository.delete(carId);
     }
 }

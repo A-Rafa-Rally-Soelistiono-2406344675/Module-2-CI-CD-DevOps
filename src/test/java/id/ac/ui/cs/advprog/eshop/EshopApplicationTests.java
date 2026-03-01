@@ -8,6 +8,6 @@ class EshopApplicationTests {
 
     @Test
     void contextLoads() {
-        // kosong 
+        // Sengaja kosong.
     }
 }
