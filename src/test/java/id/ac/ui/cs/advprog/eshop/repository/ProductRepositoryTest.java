@@ -31,7 +31,7 @@ class ProductRepositoryTest {
 
     @BeforeEach
     void setup() {
-        // no setup needed
+        // Tidak perlu setup tambahan.
     }
 
     @Test

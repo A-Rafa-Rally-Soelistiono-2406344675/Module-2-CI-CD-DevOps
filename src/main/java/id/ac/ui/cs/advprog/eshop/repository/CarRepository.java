@@ -9,11 +9,9 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public class CarRepository {
-
-    static int id = 0;
-
-    private List<Car> carData = new ArrayList<>();
+public class CarRepository implements CarReadRepository, CarWriteRepository {
+    //implemented ocp: strategi penyimpanan baru bisa ditambahkan tanpa mengubah kode service.
+    private final List<Car> carData = new ArrayList<>();
 
     public Car create(Car car) {
         if (car.getCarId() == null) {
@@ -41,14 +39,14 @@ public class CarRepository {
         for (int i = 0; i < carData.size(); i++) {
             Car car = carData.get(i);
             if (car.getCarId().equals(id)) {
-                // Update the existing car with the new information
+                // Memperbarui data mobil yang sudah ada dengan informasi terbaru.
                 car.setCarName(updatedCar.getCarName());
                 car.setCarColor(updatedCar.getCarColor());
                 car.setCarQuantity(updatedCar.getCarQuantity());
                 return car;
             }
         }
-        return null; // Handle the case where the car is not found
+        return null; // Menangani kondisi saat mobil tidak ditemukan.
     }
 
     public void delete(String id) {

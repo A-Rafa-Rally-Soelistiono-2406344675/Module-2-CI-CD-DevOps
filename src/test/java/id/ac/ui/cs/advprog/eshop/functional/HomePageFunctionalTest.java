@@ -18,14 +18,14 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 class HomePageFunctionalTest {
 
     /**
-     * The port number assigned to the running application during test execution.
-     * Set automatically during each test run by Spring Framework's test context.
+     * Nomor port yang diberikan ke aplikasi saat test berjalan.
+     * Nilai ini diisi otomatis pada setiap test oleh test context Spring Framework.
      */
     @LocalServerPort
     private int serverPort;
 
     /**
-     * The base URL for testing. Default to {@code http://localhost}.
+     * URL dasar untuk pengujian. Nilai default adalah {@code http://localhost}.
      */
     @Value("${app.baseUrl:http://localhost}")
     private String testBaseUrl;
@@ -39,22 +39,22 @@ class HomePageFunctionalTest {
 
     @Test
     void pageTitle_isCorrect(ChromeDriver driver) throws Exception {
-        // Exercise
+        // Eksekusi
         driver.get(baseUrl);
         String pageTitle = driver.getTitle();
 
-        // Verify
+        // Verifikasi
         assertEquals("ADV Shop", pageTitle);
     }
 
     @Test
     void welcomeMessage_homePage_isCorrect(ChromeDriver driver) throws Exception {
-        // Exercise
+        // Eksekusi
         driver.get(baseUrl);
         String welcomeMessage = driver.findElement(By.tagName("h3"))
                 .getText();
 
-        // Verify
+        // Verifikasi
         assertEquals("Welcome", welcomeMessage);
     }
 }
