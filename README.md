@@ -57,29 +57,27 @@ Controller bergantung ke abstraction service (`ProductService`, `CarService`), b
 Keuntungan utama menerapkan SOLID pada project ini:
 
 1. **Mudah dikembangkan (extensible)**  
-   Contoh: saat ingin mengganti penyimpanan dari in-memory ke database SQL, kita bisa membuat implementasi repository baru berdasarkan interface yang sama tanpa mengubah service.
+   saat ingin mengganti penyimpanan dari in-memory ke database SQL, kita bisa membuat implementasi repository baru berdasarkan interface yang sama tanpa mengubah service.
 
 2. **Lebih mudah diuji (testable)**  
-   Contoh: di `ProductServiceImplTest` dan `CarControllerTest`, dependency dapat di-mock lewat interface sehingga unit test lebih sederhana dan stabil.
+   di `ProductServiceImplTest` dan `CarControllerTest`, dependency dapat di-mock lewat interface sehingga unit test lebih sederhana dan stabil.
 
 3. **Perubahan lebih aman (maintainable)**  
-   Contoh: perubahan fitur car tidak lagi memengaruhi `ProductController` karena controller sudah dipisah berdasarkan tanggung jawab.
+   perubahan fitur car tidak lagi memengaruhi `ProductController` karena controller sudah dipisah berdasarkan tanggung jawab.
 
 4. **Struktur kode lebih jelas**  
-   Contoh: pemisahan read/write repository membuat alur dependency lebih mudah dipahami saat debugging maupun code review.
+   pemisahan read/write repository membuat alur dependency lebih mudah dipahami saat debugging maupun code review.
 
 ### 3) Apa kerugian jika SOLID tidak diterapkan pada project ini? (dengan contoh)
 
-Jika SOLID tidak diterapkan, dampaknya:
+1. **Tanggung jawab class bercampur**  
+   jika logic product dan car berada di satu controller, perubahan kecil pada fitur car bisa menimbulkan regresi di fitur product.
 
-1. **Tanggung jawab class bercampur dan rawan bug**  
-   Contoh: jika logic product dan car berada di satu controller, perubahan kecil pada fitur car bisa menimbulkan regresi di fitur product.
-
-2. **Coupling tinggi dan sulit diubah**  
-   Contoh: jika controller langsung bergantung pada `CarServiceImpl`, mengganti implementasi service akan memaksa perubahan di banyak class.
+2. **Coupling tinggi**  
+   jika controller langsung bergantung pada `CarServiceImpl`, mengganti implementasi service akan memaksa perubahan di banyak class.
 
 3. **Desain inheritance tidak tepat**  
-   Contoh: `CarController extends ProductController` membuat relasi "is-a" yang tidak valid sehingga mudah melanggar konsistensi perilaku.
+   `CarController extends ProductController` membuat relasi "is-a" yang tidak valid sehingga mudah melanggar konsistensi perilaku.
 
-4. **Interface terlalu besar dan tidak fokus**  
-   Contoh: tanpa ISP, client dipaksa mengetahui method yang tidak digunakan, yang memperbesar risiko perubahan berdampak ke modul lain.
+4. **Interface terlalu besar**  
+   tanpa ISP, client dipaksa mengetahui method yang tidak digunakan, yang memperbesar risiko perubahan berdampak ke modul lain.
