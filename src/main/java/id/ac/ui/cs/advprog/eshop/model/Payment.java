@@ -24,6 +24,6 @@ public class Payment {
         this.order = order;
         this.method = method;
         this.status = status;
-        this.paymentData = new HashMap<>(paymentData);
+        this.paymentData = paymentData == null ? new HashMap<>() : new HashMap<>(paymentData);
     }
 }
