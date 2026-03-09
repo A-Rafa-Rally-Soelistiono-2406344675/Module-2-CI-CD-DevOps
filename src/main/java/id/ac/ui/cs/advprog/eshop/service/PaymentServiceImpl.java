@@ -14,6 +14,8 @@ import java.util.UUID;
 public class PaymentServiceImpl implements PaymentService {
     private static final String STATUS_SUCCESS = "SUCCESS";
     private static final String STATUS_REJECTED = "REJECTED";
+    private static final String METHOD_VOUCHER_CODE = "VOUCHER_CODE";
+    private static final String METHOD_CASH_ON_DELIVERY = "CASH_ON_DELIVERY";
 
     private final PaymentRepository paymentRepository;
 
@@ -68,11 +70,11 @@ public class PaymentServiceImpl implements PaymentService {
 
     private String resolveInitialStatus(String method, Map<String, String> paymentData) {
         String normalizedMethod = normalizeMethod(method);
-        if ("VOUCHER_CODE".equals(normalizedMethod)) {
+        if (METHOD_VOUCHER_CODE.equals(normalizedMethod)) {
             return isVoucherCodeValid(paymentData) ? STATUS_SUCCESS : STATUS_REJECTED;
         }
 
-        if ("CASH_ON_DELIVERY".equals(normalizedMethod)) {
+        if (METHOD_CASH_ON_DELIVERY.equals(normalizedMethod)) {
             return isCodDataValid(paymentData) ? STATUS_SUCCESS : STATUS_REJECTED;
         }
 
