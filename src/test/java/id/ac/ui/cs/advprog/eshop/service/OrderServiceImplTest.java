@@ -13,6 +13,7 @@ import id.ac.ui.cs.advprog.eshop.repository.OrderRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,6 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 class OrderServiceImplTest {
 
     @InjectMocks
@@ -153,10 +155,10 @@ class OrderServiceImplTest {
     void testFindAllByAuthorIfAllLowercase() {
         Order order = orders.get(1);
         doReturn(new ArrayList<Order>()).when(orderRepository)
-                .findAllByAuthor(order.getAuthor().toLowerCase());
+                .findAllByAuthor(order.getAuthor().toLowerCase(Locale.ROOT));
 
         List<Order> results = orderService.findAllByAuthor(
-                order.getAuthor().toLowerCase());
+                order.getAuthor().toLowerCase(Locale.ROOT));
 
         assertTrue(results.isEmpty());
     }

@@ -7,6 +7,7 @@ import id.ac.ui.cs.advprog.eshop.repository.PaymentRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -82,7 +83,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     private String normalizeMethod(String method) {
-        return method.trim().toUpperCase().replace(' ', '_');
+        return method.trim().toUpperCase(Locale.ROOT).replace(' ', '_');
     }
 
     private boolean isVoucherCodeValid(Map<String, String> paymentData) {

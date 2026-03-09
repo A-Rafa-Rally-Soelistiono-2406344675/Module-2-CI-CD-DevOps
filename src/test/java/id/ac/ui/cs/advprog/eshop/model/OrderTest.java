@@ -9,6 +9,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class OrderTest {
 
     private List<Product> products;

@@ -16,12 +16,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
 @Controller
 @RequestMapping("/order")
 public class OrderController {
+    private static final String METHOD_VOUCHER_CODE = "VOUCHER_CODE";
+    private static final String METHOD_CASH_ON_DELIVERY = "CASH_ON_DELIVERY";
+
     private final OrderService orderService;
     private final PaymentService paymentService;
 
@@ -91,10 +95,10 @@ public class OrderController {
         }
 
         Map<String, String> paymentData = new HashMap<>();
-        String normalizedMethod = method.trim().toUpperCase().replace(' ', '_');
-        if ("VOUCHER_CODE".equals(normalizedMethod)) {
+        String normalizedMethod = method.trim().toUpperCase(Locale.ROOT).replace(' ', '_');
+        if (METHOD_VOUCHER_CODE.equals(normalizedMethod)) {
             paymentData.put("voucherCode", voucherCode);
-        } else if ("CASH_ON_DELIVERY".equals(normalizedMethod)) {
+        } else if (METHOD_CASH_ON_DELIVERY.equals(normalizedMethod)) {
             paymentData.put("address", address);
             paymentData.put("deliveryFee", deliveryFee);
         }

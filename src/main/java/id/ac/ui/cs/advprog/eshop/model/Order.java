@@ -33,7 +33,7 @@ public class Order {
         this.setStatus(status);
     }
 
-    public void setStatus(String status) {
+    public final void setStatus(String status) {
         if (OrderStatus.contains(status)) {
             this.status = status;
         } else {
