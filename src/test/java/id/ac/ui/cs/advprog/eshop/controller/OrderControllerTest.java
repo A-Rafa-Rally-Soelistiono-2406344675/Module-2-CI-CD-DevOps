@@ -164,4 +164,24 @@ class OrderControllerTest {
 
         assertEquals("redirect:/order/history", view);
     }
+
+    @Test
+    void payOrderPostShouldSendEmptyDataForUnknownMethod() {
+        Payment payment = new Payment("payment-2", order, "Unknown", "REJECTED", Map.of());
+        when(orderService.findById("order-1")).thenReturn(order);
+        when(paymentService.addPayment(eq(order), eq("Unknown"), any(Map.class))).thenReturn(payment);
+
+        String view = orderController.payOrderPost(
+                "order-1",
+                "Unknown",
+                null,
+                null,
+                null,
+                model
+        );
+
+        verify(paymentService).addPayment(eq(order), eq("Unknown"), paymentDataCaptor.capture());
+        assertEquals(0, paymentDataCaptor.getValue().size());
+        assertEquals("orderPayResult", view);
+    }
 }

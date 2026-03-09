@@ -8,6 +8,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PaymentTest {
 
@@ -45,6 +46,20 @@ class PaymentTest {
 
         payment.setStatus("REJECTED");
         assertEquals("REJECTED", payment.getStatus());
+    }
+
+    @Test
+    void testCreatePaymentWithNullPaymentDataCreatesEmptyMap() {
+        Payment payment = new Payment(
+                "payment-3",
+                createOrder(),
+                "Voucher Code",
+                "REJECTED",
+                null
+        );
+
+        assertNotNull(payment.getPaymentData());
+        assertTrue(payment.getPaymentData().isEmpty());
     }
 
     private Order createOrder() {

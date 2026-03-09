@@ -133,6 +133,79 @@ class PaymentServiceImplTest {
     }
 
     @Test
+    void testAddPaymentNullOrderThrowsException() {
+        assertThrows(IllegalArgumentException.class, () ->
+                paymentService.addPayment(null, "Voucher Code", Map.of("voucherCode", "ESHOP1234ABC5678")));
+    }
+
+    @Test
+    void testAddPaymentNullMethodThrowsException() {
+        assertThrows(IllegalArgumentException.class, () ->
+                paymentService.addPayment(order, null, Map.of("voucherCode", "ESHOP1234ABC5678")));
+    }
+
+    @Test
+    void testAddPaymentVoucherCodeInvalidBecauseDataNull() {
+        Payment result = paymentService.addPayment(order, "Voucher Code", null);
+        assertEquals("REJECTED", result.getStatus());
+    }
+
+    @Test
+    void testAddPaymentVoucherCodeInvalidBecauseCodeMissing() {
+        Payment result = paymentService.addPayment(order, "Voucher Code", Map.of("x", "y"));
+        assertEquals("REJECTED", result.getStatus());
+    }
+
+    @Test
+    void testAddPaymentVoucherCodeInvalidBecauseWrongPrefix() {
+        Payment result = paymentService.addPayment(order, "Voucher Code", Map.of("voucherCode", "XSHOP1234ABC5678"));
+        assertEquals("REJECTED", result.getStatus());
+    }
+
+    @Test
+    void testAddPaymentVoucherCodeInvalidBecauseWrongLength() {
+        Payment result = paymentService.addPayment(order, "Voucher Code", Map.of("voucherCode", "ESHOP1234"));
+        assertEquals("REJECTED", result.getStatus());
+    }
+
+    @Test
+    void testAddPaymentVoucherCodeInvalidBecauseDigitCountNotEight() {
+        Payment result = paymentService.addPayment(order, "Voucher Code", Map.of("voucherCode", "ESHOPABCD1234ABC"));
+        assertEquals("REJECTED", result.getStatus());
+    }
+
+    @Test
+    void testAddPaymentCodInvalidBecauseDataNull() {
+        Payment result = paymentService.addPayment(order, "Cash on Delivery", null);
+        assertEquals("REJECTED", result.getStatus());
+    }
+
+    @Test
+    void testAddPaymentCodInvalidBecauseDeliveryFeeBlank() {
+        Payment result = paymentService.addPayment(order, "Cash on Delivery", Map.of(
+                "address", "Jl. Merdeka",
+                "deliveryFee", " "
+        ));
+        assertEquals("REJECTED", result.getStatus());
+    }
+
+    @Test
+    void testAddPaymentCodInvalidBecauseAddressMissing() {
+        Payment result = paymentService.addPayment(order, "Cash on Delivery", Map.of(
+                "deliveryFee", "12000"
+        ));
+        assertEquals("REJECTED", result.getStatus());
+    }
+
+    @Test
+    void testAddPaymentCodInvalidBecauseDeliveryFeeMissing() {
+        Payment result = paymentService.addPayment(order, "Cash on Delivery", Map.of(
+                "address", "Jl. Merdeka"
+        ));
+        assertEquals("REJECTED", result.getStatus());
+    }
+
+    @Test
     void testGetPaymentDelegatesToRepository() {
         Payment payment = new Payment(
                 "payment-1",
@@ -166,5 +239,40 @@ class PaymentServiceImplTest {
 
         verify(paymentRepository).findAll();
         assertEquals(1, result.size());
+    }
+
+    @Test
+    void testSetStatusNullPaymentThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> paymentService.setStatus(null, "SUCCESS"));
+    }
+
+    @Test
+    void testSetStatusNullStatusThrowsException() {
+        Payment payment = new Payment(
+                "payment-2",
+                order,
+                "Voucher Code",
+                "SUCCESS",
+                Map.of("voucherCode", "ESHOP1234ABC5678")
+        );
+
+        assertThrows(IllegalArgumentException.class, () -> paymentService.setStatus(payment, null));
+    }
+
+    @Test
+    void testSetStatusOtherStatusDoesNotChangeOrderStatus() {
+        Payment payment = new Payment(
+                "payment-3",
+                order,
+                "Voucher Code",
+                "SUCCESS",
+                Map.of("voucherCode", "ESHOP1234ABC5678")
+        );
+
+        Payment result = paymentService.setStatus(payment, "PENDING");
+
+        assertEquals("PENDING", result.getStatus());
+        assertEquals(OrderStatus.WAITING_PAYMENT.getValue(), order.getStatus());
+        verify(paymentRepository).save(payment);
     }
 }

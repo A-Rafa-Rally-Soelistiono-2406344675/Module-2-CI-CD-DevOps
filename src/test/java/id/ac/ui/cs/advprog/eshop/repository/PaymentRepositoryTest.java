@@ -12,6 +12,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PaymentRepositoryTest {
 
@@ -81,6 +82,25 @@ class PaymentRepositoryTest {
     }
 
     @Test
+    void testFindByIdNotFoundWithExistingDataReturnsNull() {
+        paymentRepository.save(new Payment(
+                "payment-1",
+                order,
+                "Voucher Code",
+                "SUCCESS",
+                Map.of("voucherCode", "ESHOP1234ABC5678")
+        ));
+
+        Payment found = paymentRepository.findById("unknown");
+        assertNull(found);
+    }
+
+    @Test
+    void testFindByIdNullReturnsNull() {
+        assertNull(paymentRepository.findById(null));
+    }
+
+    @Test
     void testFindAllReturnsAllSavedPayments() {
         paymentRepository.save(new Payment(
                 "payment-1",
@@ -99,5 +119,10 @@ class PaymentRepositoryTest {
 
         List<Payment> payments = paymentRepository.findAll();
         assertEquals(2, payments.size());
+    }
+
+    @Test
+    void testSaveNullThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> paymentRepository.save(null));
     }
 }
