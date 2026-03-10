@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment Detail</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+    <h3>Find Payment Detail</h3>
+    <form id="paymentSearchForm" method="get"
+          onsubmit="this.action='/payment/detail/' + document.getElementById('paymentIdInput').value;">
+        <div class="form-group">
+            <label for="paymentIdInput">Payment ID</label>
+            <input id="paymentIdInput" class="form-control mb-3 col-6" type="text" required>
+        </div>
+        <button id="searchPaymentButton" type="submit" class="btn btn-primary">Search</button>
+    </form>
+</div>
+</body>
+</html>
